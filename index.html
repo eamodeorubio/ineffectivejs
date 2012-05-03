@@ -1,0 +1,1014 @@
+<!DOCTYPE html>
+<html lang="en" itemscope itemtype="http://schema.org/CreativeWork">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=1024"/>
+  <meta name="apple-mobile-web-app-capable" content="yes"/>
+  <title itemprop="name">Ineffective JavaScript</title>
+  <meta name="description" itemprop="description"
+        content="This talk describes the most common bad practices in modern Javascript and how to avoid them. Some of them are caused by a lack of understanding of the most misterious features of the language, while others are simply inherited from the past, when browsers where inneficient and buggy."/>
+  <meta name="author" content="Enrique Amodeo Rubio"/>
+
+  <link
+      href="http://fonts.googleapis.com/css?family=Open+Sans:regular,semibold,italic,italicsemibold|PT+Sans:400,700,400italic,700italic|PT+Serif:400,700,400italic,700italic"
+      rel="stylesheet"/>
+  <link href="css/impress-basic.css" rel="stylesheet" type="text/css"/>
+  <link href="css/press.css" rel="stylesheet" type="text/css"/>
+  <link href="css/prettify.css" rel="stylesheet" type="text/css">
+
+  <script src="js/prettify.js"></script>
+</head>
+<body class="impress-not-supported" onload="prettyPrint();">
+<section class="fallback-message">
+  <p>Your browser <b>doesn't support the features required</b> by impress.js, so you are presented with a simplified
+    version of this presentation.</p>
+
+  <p>For the best experience please use the latest <b>Chrome</b>, <b>Safari</b> or <b>Firefox</b> browser.</p>
+</section>
+
+<section id="impress">
+<article class="step slide" id="cover" data-x="0" data-y="0">
+  <hgroup>
+    <h1>Ineffective JavaScript</h1>
+
+    <h2 itemprop="alternativeHeadline">(<strong>bad</strong> practices and <strong>WTF</strong>s in
+      <strong>JS</strong>)
+    </h2>
+  </hgroup>
+  <footer class="license">
+    <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/">
+      <img alt="Creative Commons License" style="border-width:0"
+           src="http://i.creativecommons.org/l/by-nc-sa/3.0/88x31.png"/></a>
+
+    <a class="twitter" href="https://twitter.com/eamodeorubio">@eamodeorubio</a></footer>
+</article>
+<article class="step slide" id="about-me" data-x="950" data-y="0" itemprop="author" itemscope
+         itemtype="http://schema.org/Person">
+  <h1 class="title" itemprop="name">Enrique Amodeo</h1>
+  <img src="img/EnriqueAmodeo.jpg" class="portrait" itemprop="image" alt="[Enrique Amodeo, circa 2010]">
+  <ul class="bullets portrait-around">
+    <li>In the business since 2000</li>
+    <li itemprop="jobTitle">Software developer</li>
+    <li>Consulting & Mentoring</li>
+    <li>Javascript/AJAX/RIA developer since 2006</li>
+    <li>Doing agile & lean since 2005 (I like it!)</li>
+    <li>Mail me at <a href="mailto:eamodeorubio@gmail.com" itemprop="email">eamodeorubio@gmail.com</a></li>
+    <li>Read my rants at <a href="http://eamodeorubio.wordpress.com/"
+                            itemprop="url">http://eamodeorubio.wordpress.com/</a></li>
+    <li>Follow me! <a href="http://twitter.com/eamodeorubio" rel="me">@eamodeorubio</a> & <a
+        href="https://plus.google.com/u/0/105764433325228320307?rel=author" rel="me">Google+</a></li>
+  </ul>
+  <footer class="license">
+    <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/">
+      <img alt="Creative Commons License" style="border-width:0"
+           src="http://i.creativecommons.org/l/by-nc-sa/3.0/88x31.png"/></a>
+
+    <a class="twitter" href="https://twitter.com/eamodeorubio">@eamodeorubio</a></footer>
+</article>
+<article class="step slide" id="rookies" data-x="950" data-y="-838" data-rotate="-90">
+  <hgroup>
+    <h1>Typical rookie mistakes!</h1>
+
+    <h2>(nobody should be doing this, at least on purpose)</h2>
+  </hgroup>
+  <footer class="license">
+    <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/">
+      <img alt="Creative Commons License" style="border-width:0"
+           src="http://i.creativecommons.org/l/by-nc-sa/3.0/88x31.png"/></a>
+
+    <a class="twitter" href="https://twitter.com/eamodeorubio">@eamodeorubio</a></footer>
+</article>
+<article class="step slide" id="global_1" data-x="447" data-y="-1532" data-scale="0.5" data-rotate="-90">
+  <h1 class="title">Global pollution!</h1>
+
+  <div class="code-block vertical">
+    <pre class="prettyprint source-code">
+ function maxOf(a, b) {
+   r=a;
+   if(b>a)
+     r=b;
+   return r;
+ }</pre>
+  </div>
+  <footer class="license">
+    <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/">
+      <img alt="Creative Commons License" style="border-width:0"
+           src="http://i.creativecommons.org/l/by-nc-sa/3.0/88x31.png"/></a>
+
+    <a class="twitter" href="https://twitter.com/eamodeorubio">@eamodeorubio</a></footer>
+</article>
+<article class="step slide" id="global_2" data-x="447" data-y="-1532" data-scale="0.5" data-rotate="-90" data-z="-50">
+  <h1 class="title">Global pollution!</h1>
+
+  <div class="code-block vertical">
+  <pre class="prettyprint source-code">
+ function maxOf(a, b) {
+   r=a;
+   if(b>a)
+     r=b;
+   return r;
+ }</pre>
+    <pre class="prettyprint source-code">
+ function maxOf(a, b) {
+   <span class="diff">var r=a;</span>
+   if(b>a)
+     r=b;
+   return r;
+ }</pre>
+  </div>
+  <footer class="license">
+    <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/">
+      <img alt="Creative Commons License" style="border-width:0"
+           src="http://i.creativecommons.org/l/by-nc-sa/3.0/88x31.png"/></a>
+
+    <a class="twitter" href="https://twitter.com/eamodeorubio">@eamodeorubio</a></footer>
+</article>
+<article class="step slide" id="ns_1" data-x="826" data-y="-1532" data-scale="0.5" data-rotate="-90" data-z="-50">
+  <h1 class="title">Global pollution!</h1>
+
+  <div class="code-block horizontal">
+    <pre class="prettyprint source-code">
+
+ function toggle() {
+   // ....
+ }
+ function show() {
+   // ....
+ }
+ function hide() {
+   // ....
+ }
+ function fade() {
+   // ....
+ }
+ </pre>
+  </div>
+  <footer class="license">
+    <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/">
+      <img alt="Creative Commons License" style="border-width:0"
+           src="http://i.creativecommons.org/l/by-nc-sa/3.0/88x31.png"/></a>
+
+    <a class="twitter" href="https://twitter.com/eamodeorubio">@eamodeorubio</a></footer>
+</article>
+<article class="step slide" id="ns_2" data-x="826" data-y="-1532" data-scale="0.5" data-rotate="-90">
+  <h1 class="title">Global pollution!</h1>
+
+  <div class="code-block horizontal">
+    <pre class="prettyprint source-code">
+
+ function toggle() {
+   // ....
+ }
+ function show() {
+   // ....
+ }
+ function hide() {
+   // ....
+ }
+ function fade() {
+   // ....
+ }
+ </pre>
+    <pre class="prettyprint source-code">
+ var myApp={
+   'toggle':function() {
+     // ....
+   }
+   'show':function() {
+     // ....
+   }
+   'hide':function() {
+     // ....
+   }
+   'fade':function() {
+     // ....
+   }
+ };</pre>
+  </div>
+  <footer class="license">
+    <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/">
+      <img alt="Creative Commons License" style="border-width:0"
+           src="http://i.creativecommons.org/l/by-nc-sa/3.0/88x31.png"/></a>
+
+    <a class="twitter" href="https://twitter.com/eamodeorubio">@eamodeorubio</a></footer>
+</article>
+<article class="step slide" id="naming_1" data-x="1195" data-y="-1532" data-scale="0.5" data-rotate="-90">
+  <h1 class="title">Meaningless names</h1>
+
+  <div class="code-block vertical">
+    <pre class="prettyprint source-code">
+ function a(bc) {
+   var e=document.querySelectorAll('.title.'+bc);
+   var el=e.length;
+   for(var o=0;o&lt;el;o++)
+     e.item(o).style.display='none';
+ }
+ a('ib');</pre>
+  </div>
+  <footer class="license">
+    <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/">
+      <img alt="Creative Commons License" style="border-width:0"
+           src="http://i.creativecommons.org/l/by-nc-sa/3.0/88x31.png"/></a>
+
+    <a class="twitter" href="https://twitter.com/eamodeorubio">@eamodeorubio</a></footer>
+</article>
+<article class="step slide" id="naming_2" data-x="1195" data-y="-1532" data-scale="0.5" data-rotate="-90" data-z="-50">
+  <h1 class="title">Meaningless names</h1>
+
+  <div class="code-block vertical">
+    <pre class="prettyprint source-code">
+ function hideAllTitlesWithClass(className) {
+   var titlesToHide=document
+                .querySelectorAll('.title.'+className);
+   var numberOfTitlesToHide=titlesToHide.length;
+   for(var i=0;i&lt;numberOfTitlesToHide;i++)
+      titlesToHide.item(i).style.display='none';
+ }
+ hideAllTitlesWithClass('insidious-banners');</pre>
+    <ul class="bullets">
+      <li class="even">Do you want to save bandwidth?</li>
+      <li class="odd">...let the build system take care of that</li>
+    </ul>
+  </div>
+  <footer class="license">
+    <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/">
+      <img alt="Creative Commons License" style="border-width:0"
+           src="http://i.creativecommons.org/l/by-nc-sa/3.0/88x31.png"/></a>
+
+    <a class="twitter" href="https://twitter.com/eamodeorubio">@eamodeorubio</a></footer>
+</article>
+<article class="step slide" id="wtf" data-x="1900">
+  <hgroup>
+    <h1 style="margin: 1em auto 0.5em auto;">Javascript is different!</h1>
+    <figure class="img_inline">
+      <img src="img/sparta.jpg" style="margin: 0 20%;">
+      <figcaption>http://www.frikipix.com/web/caution-this-is-sparta/</figcaption>
+    </figure>
+    <h2>(should say: "this is Javascript!")</h2>
+  </hgroup>
+  <footer class="license">
+    <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/">
+      <img alt="Creative Commons License" style="border-width:0"
+           src="http://i.creativecommons.org/l/by-nc-sa/3.0/88x31.png"/></a>
+
+    <a class="twitter" href="https://twitter.com/eamodeorubio">@eamodeorubio</a></footer>
+</article>
+<article class="step slide" id="for_in" data-x="2613" data-scale="0.5">
+  <h1 class="title">Wrong loop</h1>
+
+  <div class="code-block vertical">
+      <pre class="prettyprint source-code">
+
+ var anArray=[1, 2, 3];
+ var r=0;
+ for(element in anArray)
+   r+=element;
+ console.log(r); // It prints 6, doesn't it?
+      </pre>
+    <ul class="bullets">
+      <li class="even">In other languages it works</li>
+      <li class="odd">...but in JS it isn't doing what you think!</li>
+      <li class="even">and in no particular order</li>
+    </ul>
+  </div>
+  <footer class="license">
+    <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/">
+      <img alt="Creative Commons License" style="border-width:0"
+           src="http://i.creativecommons.org/l/by-nc-sa/3.0/88x31.png"/></a>
+
+    <a class="twitter" href="https://twitter.com/eamodeorubio">@eamodeorubio</a></footer>
+</article>
+<article class="step slide" id="braces" data-x="2613" data-scale="0.5">
+  <h1 class="title">Braces & scopes</h1>
+
+  <div class="code-block vertical">
+      <pre class="prettyprint source-code">
+ var x=10;
+ function silly() {
+   var x = 1;
+   console.log(x); // 1
+   if (true) {
+     var x = 2;
+     console.log(x); // 2
+   }
+   console.log(x); // 2
+ }
+ silly();
+ console.log(x); //10</pre>
+    <ul class="bullets small">
+      <li class="even">In other languages braces open a new scope</li>
+      <li class="odd">...but in JS only functions do it!</li>
+    </ul>
+  </div>
+  <footer class="license">
+    <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/">
+      <img alt="Creative Commons License" style="border-width:0"
+           src="http://i.creativecommons.org/l/by-nc-sa/3.0/88x31.png"/></a>
+
+    <a class="twitter" href="https://twitter.com/eamodeorubio">@eamodeorubio</a></footer>
+</article>
+<article class="step slide" id="hoisting_1" data-x="2613" data-z="50" data-scale="0.5">
+  <h1 class="title">Declaring vars just before using it</h1>
+
+  <div class="code-block vertical">
+      <pre class="prettyprint source-code">
+ var x=10;
+ function silly() {
+   console.log(x); // undefined
+   x=2
+   console.log(x); // 2
+   return;
+   var x = 1;
+ }
+ silly();
+ console.log(x); // 10</pre>
+    <ul class="bullets">
+      <li class="even">Var declarations are "hoisted"</li>
+      <li class="odd">...but initializations don't!</li>
+    </ul>
+  </div>
+  <footer class="license">
+    <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/">
+      <img alt="Creative Commons License" style="border-width:0"
+           src="http://i.creativecommons.org/l/by-nc-sa/3.0/88x31.png"/></a>
+
+    <a class="twitter" href="https://twitter.com/eamodeorubio">@eamodeorubio</a></footer>
+</article>
+<article class="step slide" id="hoisting_2" data-x="2613" data-z="100" data-scale="0.5">
+  <h1 class="title">Avoid traps!</h1>
+
+  <div class="code-block vertical">
+      <pre class="prettyprint source-code">
+ function someFunction(selector){
+   // All declarations at the beginning !
+   var elements=document.querySelectorAll(selector)
+     , numberOfElements=elements.length
+     , text, index;
+   // Some code here
+ }</pre>
+    <ul class="bullets">
+      <li class="even">Avoid deep nesting</li>
+      <li class="odd">No nasty surprises!</li>
+      <li class="even">No accidental var overriting!</li>
+    </ul>
+  </div>
+  <footer class="license">
+    <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/">
+      <img alt="Creative Commons License" style="border-width:0"
+           src="http://i.creativecommons.org/l/by-nc-sa/3.0/88x31.png"/></a>
+
+    <a class="twitter" href="https://twitter.com/eamodeorubio">@eamodeorubio</a></footer>
+</article>
+<article class="step slide" id="this_that_1" data-x="2613" data-y="369" data-z="100" data-scale="0.5">
+  <h1 class="title">This & that</h1>
+
+  <div class="code-block vertical">
+      <pre class="prettyprint source-code small">
+ var SimpleController=function(model, view) {
+   this.model=model;
+   this.view=view;
+ };
+ SimpleController.prototype={
+   'init':function() {
+     this.view.addEventListener('click', this.handleIncrementRequest);
+   },
+   'handleIncrementRequest':function() {
+     this.model.increment();
+   }
+ };</pre>
+    <ul class="bullets small">
+      <li class="even">In other languages <code>this</code> refers to the "host" object</li>
+      <li class="odd">...In JS is the execution context, it can change!</li>
+    </ul>
+  </div>
+  <footer class="license">
+    <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/">
+      <img alt="Creative Commons License" style="border-width:0"
+           src="http://i.creativecommons.org/l/by-nc-sa/3.0/88x31.png"/></a>
+
+    <a class="twitter" href="https://twitter.com/eamodeorubio">@eamodeorubio</a></footer>
+</article>
+<article class="step slide" id="this_that_0" data-x="2613" data-y="369" data-z="50" data-scale="0.5">
+  <h1 class="title">This & that (old fashion)</h1>
+
+  <div class="code-block vertical">
+      <pre class="prettyprint source-code small">
+ var SimpleController=function(model, view) {
+   this.model=model;
+   this.view=view;
+ };
+ SimpleController.prototype={
+   'init':function() {
+     <span class="diff">var that=this;</span>
+     this.view.addEventListener('click', function() {
+       <span class="diff">that.handleIncrementRequest();</span>
+     });
+   },
+   'handleIncrementRequest':function() {
+     this.model.increment();
+   }
+ };</pre>
+  </div>
+  <footer class="license">
+    <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/">
+      <img alt="Creative Commons License" style="border-width:0"
+           src="http://i.creativecommons.org/l/by-nc-sa/3.0/88x31.png"/></a>
+
+    <a class="twitter" href="https://twitter.com/eamodeorubio">@eamodeorubio</a></footer>
+</article>
+<article class="step slide" id="this_that_3" data-x="2613" data-y="369" data-scale="0.5">
+  <h1 class="title">This & that (much better!)</h1>
+
+  <div class="code-block vertical">
+      <pre class="prettyprint source-code small">
+ var SimpleController=function(model, view) {
+   this.model=model;
+   this.view=view;
+ };
+ SimpleController.prototype={
+   'init':function() {
+     this.view.addEventListener('click',
+                           <span class="diff">this.handleIncrementRequest.bind(this)</span>);
+   },
+   'handleIncrementRequest':function() {
+     this.model.increment();
+   }
+ };</pre>
+    <ul class="bullets small">
+      <li class="even">Use the standard!</li>
+    </ul>
+  </div>
+  <footer class="license">
+    <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/">
+      <img alt="Creative Commons License" style="border-width:0"
+           src="http://i.creativecommons.org/l/by-nc-sa/3.0/88x31.png"/></a>
+
+    <a class="twitter" href="https://twitter.com/eamodeorubio">@eamodeorubio</a></footer>
+</article>
+<article class="step slide" id="equality" data-x="2613" data-y="738" data-scale="0.5">
+  <h1 class="title">Equality</h1>
+  <ul class="bullets medium">
+    <li class="even">Don't use <code>==</code> to compare primitives</li>
+    <li class="odd">...use <code>===</code> to avoid the traps of type conversions</li>
+    <li class="even">Idem with <code>!=</code> and <code>!==</code></li>
+  </ul>
+  <ul class="bullets medium">
+    <li class="even">Don't use neither <code>==</code> nor <code>===</code> to compare two objects</li>
+    <li class="odd">...better define an explicit <code>equals</code> method</li>
+  </ul>
+  <footer class="license">
+    <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/">
+      <img alt="Creative Commons License" style="border-width:0"
+           src="http://i.creativecommons.org/l/by-nc-sa/3.0/88x31.png"/></a>
+
+    <a class="twitter" href="https://twitter.com/eamodeorubio">@eamodeorubio</a></footer>
+</article>
+<article class="step slide" id="conversion" data-x="2613" data-y="1107" data-scale="0.5">
+  <h1 class="title">Objects & Type conversion</h1>
+  <ul class="bullets medium">
+    <li class="even">Define an explicit <code>valueOf</code> and <code>toString</code> methods</li>
+    <li class="odd">...to convert to a primitive or to a string</li>
+  </ul>
+  <ul class="bullets medium">
+    <li class="even">To play nice with <code>&lt;</code> and <code>&gt;</code></li>
+    <li class="odd">...make <code>valueOf</code> return a number</li>
+    <li class="odd">...or define <code>toString</code> for lexical ordering</li>
+  </ul>
+  <footer class="license">
+    <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/">
+      <img alt="Creative Commons License" style="border-width:0"
+           src="http://i.creativecommons.org/l/by-nc-sa/3.0/88x31.png"/></a>
+
+    <a class="twitter" href="https://twitter.com/eamodeorubio">@eamodeorubio</a></footer>
+</article>
+<article class="step slide" id="comparision_sample" data-x="2613" data-y="1476" data-scale="0.5">
+  <h1 class="title">Objects instead primitives</h1>
+
+  <div class="code-block vertical">
+      <pre class="prettyprint source-code">
+
+ var a=new Number(33);
+ var b=new Number(33);
+ console.log(a==b); // false
+ console.log(a===b); // false
+ console.log(a==33); // true (valueOf!)
+ console.log(a===33); // false
+ a.valueOf=function() {
+   return 2;
+ };
+ console.log(a==33); // false (valueOf!)
+ </pre>
+  </div>
+  <footer class="license">
+    <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/">
+      <img alt="Creative Commons License" style="border-width:0"
+           src="http://i.creativecommons.org/l/by-nc-sa/3.0/88x31.png"/></a>
+
+    <a class="twitter" href="https://twitter.com/eamodeorubio">@eamodeorubio</a></footer>
+</article>
+<article class="step slide" id="nudity" data-x="0" data-y="0" data-rotate="-180">
+  <hgroup>
+    <h1>Nudity!</h1>
+
+    <h2>(as seen in most javascript projects)</h2>
+  </hgroup>
+  <footer class="license">
+    <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/">
+      <img alt="Creative Commons License" style="border-width:0"
+           src="http://i.creativecommons.org/l/by-nc-sa/3.0/88x31.png"/></a>
+
+    <a class="twitter" href="https://twitter.com/eamodeorubio">@eamodeorubio</a></footer>
+</article>
+<article class="step slide" id="all_public" data-x="-700" data-y="0" data-rotate="-180" data-scale="0.5">
+  <h1 class="title">Showing our underwear!</h1>
+
+  <div class="code-block vertical">
+    <pre class="prettyprint source-code">
+ var someHelper=function(param) {
+   // Some code here....
+ };
+ var complexBusinessRule=function() {
+   // Some complex calculation here
+   var aux=someHelper(data);
+   // Some more computation with aux
+ };</pre>
+    <ul class="bullets">
+      <li class="even">Our API is <code>complexBusinessRule</code></li>
+      <li class="odd">...but we expose <code>someHelper</code></li>
+    </ul>
+  </div>
+  <footer class="license">
+    <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/">
+      <img alt="Creative Commons License" style="border-width:0"
+           src="http://i.creativecommons.org/l/by-nc-sa/3.0/88x31.png"/></a>
+
+    <a class="twitter" href="https://twitter.com/eamodeorubio">@eamodeorubio</a></footer>
+</article>
+<article class="step slide" id="ns_not_a_solution" data-x="-700" data-y="0" data-rotate="-180" data-scale="0.5"
+         data-z="50">
+  <h1 class="title">Showing our underwear!</h1>
+
+  <div class="code-block vertical">
+    <pre class="prettyprint source-code">
+ var ns={
+   '_someHelper':function(param) {
+     // Some code here....
+   },
+   'complexBusinessRule':function() {
+     // Some complex calculation here
+     var aux=ns._someHelper(data);
+     // Some more computation with aux
+   }
+ };</pre>
+    <ul class="bullets">
+      <li class="even">Not really a solution</li>
+    </ul>
+  </div>
+  <footer class="license">
+    <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/">
+      <img alt="Creative Commons License" style="border-width:0"
+           src="http://i.creativecommons.org/l/by-nc-sa/3.0/88x31.png"/></a>
+
+    <a class="twitter" href="https://twitter.com/eamodeorubio">@eamodeorubio</a></footer>
+</article>
+<article class="step slide" id="closures_for_private" data-x="-700" data-y="0" data-rotate="-180" data-scale="0.5"
+         data-z="100">
+  <h1 class="title">Showing our underwear!</h1>
+
+  <div class="code-block vertical">
+    <pre class="prettyprint source-code">
+ var complexBusinessRule=function() {
+   var someHelper=function(param) {
+     // Some code here....
+   };
+
+   // Some complex calculation here
+   var aux=someHelper(data);
+   // Some more computation with aux
+ };</pre>
+    <ul class="bullets">
+      <li class="even">Acceptable</li>
+      <li class="odd">...but there is a better way!</li>
+    </ul>
+  </div>
+  <footer class="license">
+    <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/">
+      <img alt="Creative Commons License" style="border-width:0"
+           src="http://i.creativecommons.org/l/by-nc-sa/3.0/88x31.png"/></a>
+
+    <a class="twitter" href="https://twitter.com/eamodeorubio">@eamodeorubio</a></footer>
+</article>
+<article class="step slide" id="modules" data-x="-700" data-y="0" data-rotate="-180" data-scale="0.5" data-z="150">
+  <h1 class="title">Showing our underwear!</h1>
+
+  <div class="code-block vertical">
+    <pre class="prettyprint source-code">
+ var complexBusinessRule=(function() {
+   var someHelper=function(param) {
+     // Some code here....
+   };
+
+   return function() {
+     // Some complex calculation here
+     var aux=someHelper(data);
+     // Some more computation with aux
+   };
+ })();</pre>
+    <ul class="bullets">
+      <li class="even">Best use the <code>module</code> pattern</li>
+    </ul>
+  </div>
+  <footer class="license">
+    <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/">
+      <img alt="Creative Commons License" style="border-width:0"
+           src="http://i.creativecommons.org/l/by-nc-sa/3.0/88x31.png"/></a>
+
+    <a class="twitter" href="https://twitter.com/eamodeorubio">@eamodeorubio</a></footer>
+</article>
+<article class="step slide" id="naked_objects" data-x="-700" data-y="-360" data-rotate="-180" data-scale="0.5"
+         data-z="150">
+  <h1 class="title">Showing our underwear!</h1>
+
+  <div class="code-block vertical">
+    <pre class="prettyprint source-code">
+ var SomeObject=function(prop1Value, prop2Value) {
+   // Some nice public fields here!
+   this.prop1=prop1Value;
+   this.prop2=prop2Value;
+ };
+ SomeObject.prototype._someHelper=function() {
+   // Helping!
+ };
+ SomeObject.prototype.method1=function() {
+   // Some complex calculation here
+   var aux=this._someHelper(data);
+   // Some more computation with aux
+ };</pre>
+    <ul class="bullets">
+      <li class="even">Look mom: OO without encapsulation!</li>
+    </ul>
+  </div>
+  <footer class="license">
+    <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/">
+      <img alt="Creative Commons License" style="border-width:0"
+           src="http://i.creativecommons.org/l/by-nc-sa/3.0/88x31.png"/></a>
+
+    <a class="twitter" href="https://twitter.com/eamodeorubio">@eamodeorubio</a></footer>
+</article>
+<article class="step slide" id="prototype" data-x="-700" data-y="-360" data-rotate="-180" data-scale="0.5"
+         data-z="100">
+  <h1 class="title">Beware prototype!</h1>
+
+  <ul class="bullets">
+    <li class="even">No private members</li>
+    <li class="even">Prototypical inheritance === Implementation inheritance</li>
+    <li class="even">Read this to know why it's bad: <a href="http://bit.ly/JN96WT">http://bit.ly/JN96WT</a>
+    </li>
+  </ul>
+  <footer class="license">
+    <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/">
+      <img alt="Creative Commons License" style="border-width:0"
+           src="http://i.creativecommons.org/l/by-nc-sa/3.0/88x31.png"/></a>
+
+    <a class="twitter" href="https://twitter.com/eamodeorubio">@eamodeorubio</a></footer>
+</article>
+<article class="step slide" id="oo" data-x="-700" data-y="-360" data-rotate="-180" data-scale="0.5"
+         data-z="50">
+  <h1 class="title">Do not show your object's underwear</h1>
+
+  <div class="code-block vertical">
+    <pre class="prettyprint source-code">
+ var SomeObject=function(prop1Value, prop2Value) {
+   // Some nice private fields here!
+   var prop1=prop1Value;
+   var prop2=prop2Value;
+   // A nice private helper
+   function someHelper() {
+     // Helping!
+   }
+   // Public methods (no need of 'this')
+   this.method1=function() {
+     // Some complex calculation here
+     var aux=someHelper(data);
+     // Some more computation with aux
+   };
+ };</pre>
+  </div>
+  <footer class="license">
+    <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/">
+      <img alt="Creative Commons License" style="border-width:0"
+           src="http://i.creativecommons.org/l/by-nc-sa/3.0/88x31.png"/></a>
+
+    <a class="twitter" href="https://twitter.com/eamodeorubio">@eamodeorubio</a></footer>
+</article>
+<article class="step slide" id="messingclosures" data-x="-700" data-y="-720" data-rotate="-180" data-z="1000"
+         data-scale="0.5">
+  <hgroup>
+    <h1>Messing with closures and loops</h1>
+
+    <h2>(blame the asynchronous APIs)</h2>
+  </hgroup>
+  <footer class="license">
+    <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/">
+      <img alt="Creative Commons License" style="border-width:0"
+           src="http://i.creativecommons.org/l/by-nc-sa/3.0/88x31.png"/></a>
+
+    <a class="twitter" href="https://twitter.com/eamodeorubio">@eamodeorubio</a></footer>
+</article>
+<article class="step slide" id="nesting_closures" data-x="-700" data-y="-720" data-rotate="-180" data-scale="0.5"
+         data-z="50">
+  <h1 class="title">Anonymous Functions Everywhere</h1>
+
+  <div class="code-block vertical">
+    <pre class="prettyprint source-code small">
+  someBtn.addEventListener('click', function(ev) {
+    ajax.fetch('/products?priceMax=200', function(hrefs) {
+      for(var i=0;i&lt;hrefs.length;i++)
+        ajax.fetch(hrefs[i], function(product) {
+          var productEl=templates.render('productTpl', product);
+          productEl.addEventListener('click', function() {
+            // Some bug here, do you get it?
+            ajax.remove(hrefs[i], function() {
+              // Will this cause a memory leak?
+              someBtn.parentNode.removeChild(productEl);
+            });
+          });
+          someBtn.parentNode.appendChild(productEl);
+        });
+      });
+  });// Not confusing at all, is it?</pre>
+  </div>
+  <footer class="license">
+    <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/">
+      <img alt="Creative Commons License" style="border-width:0"
+           src="http://i.creativecommons.org/l/by-nc-sa/3.0/88x31.png"/></a>
+
+    <a class="twitter" href="https://twitter.com/eamodeorubio">@eamodeorubio</a></footer>
+</article>
+<article class="step slide" id="nesting_closures2" data-x="-700" data-y="-720" data-rotate="-180" data-scale="0.5"
+         data-z="0">
+  <h1 class="title">Naming & SRP (1)</h1>
+
+  <div class="code-block vertical">
+    <pre class="prettyprint source-code small">
+ someBtn.addEventListener('click', function() {
+   var showProduct=renderProductIn(someBtn.parentNode);
+   forEachProductUriCheaperThan(200, fetchServerDataAndThen(showProduct));
+ });
+ function forEachProductUriCheaperThan(maxPrice, callback) {
+   ajax.fetch('/products?priceMax='+maxPrice, function(hrefs) {
+     for(var i=0;i&lt;hrefs.length;i++)
+       callback(hrefs[i]);
+   });
+ }
+ function fetchServerDataAndThen(callback) {
+   return function(uri) {
+     ajax.fetch(uri, function(data) { callback(data, uri); });
+   };
+ }</pre>
+  </div>
+  <footer class="license">
+    <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/">
+      <img alt="Creative Commons License" style="border-width:0"
+           src="http://i.creativecommons.org/l/by-nc-sa/3.0/88x31.png"/></a>
+
+    <a class="twitter" href="https://twitter.com/eamodeorubio">@eamodeorubio</a></footer>
+</article>
+<article class="step slide" id="nesting_closures3" data-x="-700" data-y="-720" data-rotate="-180" data-scale="0.5"
+         data-z="50">
+  <h1 class="title">Naming & SRP (2)</h1>
+
+  <div class="code-block vertical">
+    <pre class="prettyprint source-code small">
+ function renderProductIn(parentEl) {
+   return function(product, uri) {
+     var productEl=templates.render('productTpl', product);
+     var removeFromServerAndUnrender=removeFromServerAndThen(uri, function() {
+       parentEl.removeChild(productEl);
+     });
+     productEl.addEventListener('click', removeFromServerAndUnrender);
+     parentEl.appendChild(productEl);
+   }
+ }
+ function removeFromServerAndThen(uri, callback) {
+   return function() {
+     ajax.remove(uri, callback);
+   };
+ }</pre>
+  </div>
+  <footer class="license">
+    <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/">
+      <img alt="Creative Commons License" style="border-width:0"
+           src="http://i.creativecommons.org/l/by-nc-sa/3.0/88x31.png"/></a>
+
+    <a class="twitter" href="https://twitter.com/eamodeorubio">@eamodeorubio</a></footer>
+</article>
+<article class="step slide" id="loops_closures" data-x="-700" data-y="-1080" data-rotate="-180" data-scale="0.5"
+         data-z="50">
+  <h1 class="title">Closures & loops (bad)</h1>
+
+  <div class="code-block vertical">
+    <pre class="prettyprint source-code">
+ function fetchProductDataAndThen(callback) {
+   ajax.fetch('/products', function(hrefs) {
+     for(var i=0;i&lt;hrefs.length;i++) {
+       var productUri=hrefs[i];
+       // A tricky bug here !
+       ajax.fetch(productUri, function(productData) {
+         callback(productData, productUri);
+       });
+     }
+   });
+ }</pre>
+  </div>
+  <footer class="license">
+    <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/">
+      <img alt="Creative Commons License" style="border-width:0"
+           src="http://i.creativecommons.org/l/by-nc-sa/3.0/88x31.png"/></a>
+
+    <a class="twitter" href="https://twitter.com/eamodeorubio">@eamodeorubio</a></footer>
+</article>
+<article class="step slide" id="loops_closures2" data-x="-700" data-y="-1080" data-rotate="-180" data-scale="0.5"
+         data-z="50">
+  <h1 class="title">Closures & loops (clever solution)</h1>
+
+  <div class="code-block vertical">
+    <pre class="prettyprint source-code">
+ function fetchProductDataAndThen(callback) {
+   ajax.fetch('/products', function(hrefs) {
+     for(var i=0;i&lt;hrefs.length;i++) {
+       var productUri=hrefs[i];
+       ajax.fetch(productUri, (function(uri) {
+         return function(productData) {
+           callback(productData, uri);
+         };
+       })(productUri));
+     }
+   });
+ }
+ // Works, but it is messy !
+ // Why does everybody think JS is not maintanable?</pre>
+  </div>
+  <footer class="license">
+    <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/">
+      <img alt="Creative Commons License" style="border-width:0"
+           src="http://i.creativecommons.org/l/by-nc-sa/3.0/88x31.png"/></a>
+
+    <a class="twitter" href="https://twitter.com/eamodeorubio">@eamodeorubio</a></footer>
+</article>
+<article class="step slide" id="loops_closures3" data-x="-700" data-y="-1080" data-rotate="-180" data-scale="0.5"
+         data-z="100">
+  <h1 class="title">Closures & loops (better)</h1>
+
+  <div class="code-block vertical">
+    <pre class="prettyprint source-code">
+ // This is a function factory
+ // If objects can have factories, why not functions?
+ function fetchServerDataFromAndThen(uri, callback) {
+   return function(productData) {
+     callback(productData, uri);
+   };
+ }
+ function fetchProductDataAndThen(callback) {
+   ajax.fetch('/products', function(hrefs) {
+     for(var i=0;i&lt;hrefs.length;i++) {
+       var productUri=hrefs[i];
+       ajax.fetch(productUri
+         , fetchServerDataAndThen(productUri, callback));
+     }
+   });
+ }</pre>
+  </div>
+  <footer class="license">
+    <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/">
+      <img alt="Creative Commons License" style="border-width:0"
+           src="http://i.creativecommons.org/l/by-nc-sa/3.0/88x31.png"/></a>
+
+    <a class="twitter" href="https://twitter.com/eamodeorubio">@eamodeorubio</a></footer>
+</article>
+<article class="step slide" id="loops_closures4" data-x="-700" data-y="-1080" data-rotate="-180" data-scale="0.5"
+         data-z="100">
+  <h1 class="title">Closures & loops: avoid loops!</h1>
+
+  <div class="code-block vertical">
+    <pre class="prettyprint source-code">
+ // Forget loops!
+ function fetchProductDataAndThen(callback) {
+   ajax.fetch('/products', function(hrefs) {
+     hrefs.forEach(function(uri) {
+       ajax.fetch(uri, function(productData) {
+         callback(productData, uri);
+       });
+     });
+   });
+ }
+ // Better !
+ // You can mix with function factory if you like</pre>
+  </div>
+  <footer class="license">
+    <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/">
+      <img alt="Creative Commons License" style="border-width:0"
+           src="http://i.creativecommons.org/l/by-nc-sa/3.0/88x31.png"/></a>
+
+    <a class="twitter" href="https://twitter.com/eamodeorubio">@eamodeorubio</a></footer>
+</article>
+<article class="step slide" id="asynchAPI" data-x="-700" data-y="-1080" data-rotate="-180" data-scale="0.5"
+         data-z="150">
+  <h1 class="title">Asynchronous is first citizen</h1>
+
+  <div class="code-block vertical">
+    <pre class="prettyprint source-code">
+ // Design API with asynchronous in mind from the start
+ // Add a touch of DSL & OO
+ function fetchCheapProductsDataAndThen(callback) {
+   ProductsCollection
+      .withMaxPrice(200)
+      .forEach(function(product) {
+         product.fetch(function(productData) {
+           callback(productData, product);
+         }
+      );
+   });
+ }</pre>
+  </div>
+  <footer class="license">
+    <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/">
+      <img alt="Creative Commons License" style="border-width:0"
+           src="http://i.creativecommons.org/l/by-nc-sa/3.0/88x31.png"/></a>
+
+    <a class="twitter" href="https://twitter.com/eamodeorubio">@eamodeorubio</a></footer>
+</article>
+<article class="step slide" id="clever" data-x="-700" data-y="-1080" data-z="-500" data-scale="0.5">
+  <hgroup>
+    <h1>Solving the wrong problems</h1>
+  </hgroup>
+  <footer class="license">
+    <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/">
+      <img alt="Creative Commons License" style="border-width:0"
+           src="http://i.creativecommons.org/l/by-nc-sa/3.0/88x31.png"/></a>
+
+    <a class="twitter" href="https://twitter.com/eamodeorubio">@eamodeorubio</a></footer>
+</article>
+<article class="step slide" id="optimization" data-x="-700" data-y="-1080" data-z="-1500" data-scale="0.5">
+  <h1 class="title">Premature optimization</h1>
+  <ul class="bullets">
+    <li class="even">Do not optimize your code</li>
+    <li class="odd">...unless it is found guilty!</li>
+    <li class="even">When necessary optimize only the bottleneck! Usual suspects:</li>
+    <ul style="margin-left: 10%">
+      <li>Bad UX</li>
+      <li>DOM manipulation</li>
+      <li>Memory</li>
+      <li>Variable resolution</li>
+    </ul>
+  </ul>
+  <footer class="license">
+    <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/">
+      <img alt="Creative Commons License" style="border-width:0"
+           src="http://i.creativecommons.org/l/by-nc-sa/3.0/88x31.png"/></a>
+
+    <a class="twitter" href="https://twitter.com/eamodeorubio">@eamodeorubio</a></footer>
+</article>
+<article class="step slide" id="dominfected" data-x="-700" data-y="-1080" data-z="-1550" data-scale="0.5">
+  <h1 class="title">DOM infected code base</h1>
+  <img src="img/domcode.png" class="img_inline">
+  <footer class="license">
+    <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/">
+      <img alt="Creative Commons License" style="border-width:0"
+           src="http://i.creativecommons.org/l/by-nc-sa/3.0/88x31.png"/></a>
+
+    <a class="twitter" href="https://twitter.com/eamodeorubio">@eamodeorubio</a></footer>
+</article>
+<article class="step slide" id="infected" data-x="-700" data-y="-1080" data-z="-1600" data-scale="0.5">
+  <h1 class="title">Technology Coupled Code Base</h1>
+  <ul class="bullets">
+    <li class="even">Do not focus in how to use the platform</li>
+    <ul style="margin-left: 10%">
+      <li>...jQuery</li>
+      <li>...Node</li>
+      <li>...IndexedDB</li>
+    </ul>
+    <li class="even">Focus in the app logic</li>
+    <li class="odd">...in a platform independent way</li>
+    <li class="odd">...because technology changes fast!</li>
+  </ul>
+  <footer class="license">
+    <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/">
+      <img alt="Creative Commons License" style="border-width:0"
+           src="http://i.creativecommons.org/l/by-nc-sa/3.0/88x31.png"/></a>
+
+    <a class="twitter" href="https://twitter.com/eamodeorubio">@eamodeorubio</a></footer>
+</article>
+<article id="overview" class="step overview" data-x="900" data-y="500" data-scale="6" data-z="1000">
+  <hgroup>
+    <h1>Thank you !!</h1>
+
+    <h2>Q & A ??</h2>
+  </hgroup>
+</article>
+</section>
+
+<script src="js/impress.js"></script>
+<script>impress();</script>
+</body>
+</html>
