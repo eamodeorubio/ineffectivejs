@@ -786,10 +786,10 @@
  function renderProductIn(parentEl) {
    return function(product, uri) {
      var productEl=templates.render('productTpl', product);
-     var removeFromServerAndUnrender=removeFromServerAndThen(uri, function() {
+     var deleteAndUnrender=removeFromServerAndThen(uri, function() {
        parentEl.removeChild(productEl);
      });
-     productEl.addEventListener('click', removeFromServerAndUnrender);
+     productEl.addEventListener('click', deleteAndUnrender);
      parentEl.appendChild(productEl);
    }
  }
