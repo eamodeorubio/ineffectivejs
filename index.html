@@ -264,7 +264,7 @@
 
  var anArray=[1, 2, 3];
  var r=0;
- for(element in anArray)
+ for(var element in anArray)
    r+=element;
  console.log(r); // It prints 6, doesn't it?
       </pre>
@@ -501,6 +501,88 @@
  };
  console.log(a==33); // false (valueOf!)
  </pre>
+  </div>
+  <footer class="license">
+    <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/">
+      <img alt="Creative Commons License" style="border-width:0"
+           src="http://i.creativecommons.org/l/by-nc-sa/3.0/88x31.png"/></a>
+
+    <a class="twitter" href="https://twitter.com/eamodeorubio">@eamodeorubio</a></footer>
+</article>
+<article class="step slide" id="instanceof" data-x="2613" data-y="1476" data-scale="0.5" data-z="300">
+  <h1 class="title">Checking (incorrectly) the args</h1>
+
+  <div class="code-block vertical">
+      <pre class="prettyprint source-code">
+ function oddElementsFromArray(anArray) {
+   if(!anArray||!(anArray instanceof Array))
+     throw 'Need an array as argument';
+   var r=[], current;
+   for(var i=0, size=anArray.length;i&lt;size;i++) {
+     current=anArray[i];
+     if(current % 2==1)
+        r.push(current);
+   }
+   return r;
+ }
+ </pre>
+  </div>
+  <ul class="bullets medium">
+    <li class="even"><code>instanceof</code> it's not what you think (again)</li>
+  </ul>
+  <footer class="license">
+    <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/">
+      <img alt="Creative Commons License" style="border-width:0"
+           src="http://i.creativecommons.org/l/by-nc-sa/3.0/88x31.png"/></a>
+
+    <a class="twitter" href="https://twitter.com/eamodeorubio">@eamodeorubio</a></footer>
+</article>
+<article class="step slide" id="isArray" data-x="2613" data-y="1476" data-scale="0.5" data-z="350">
+  <h1 class="title">Checking (the 'class' of) the args</h1>
+
+  <div class="code-block vertical">
+      <pre class="prettyprint source-code">
+ function oddElementsFromArray(anArray) {
+   if(!anArray||!Array.isArray(anArray))
+     throw 'Need an array as argument';
+   var r=[], current;
+   for(var i=0, size=anArray.length;i&lt;size;i++) {
+     current=anArray[i];
+     if(current % 2==1)
+        r.push(current);
+   }
+   return r;
+ }
+ </pre>
+  </div>
+  <footer class="license">
+    <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/">
+      <img alt="Creative Commons License" style="border-width:0"
+           src="http://i.creativecommons.org/l/by-nc-sa/3.0/88x31.png"/></a>
+
+    <a class="twitter" href="https://twitter.com/eamodeorubio">@eamodeorubio</a></footer>
+</article>
+<article class="step slide" id="duck" data-x="2613" data-y="1476" data-scale="0.5" data-z="400">
+  <h1 class="title">Duck typing !</h1>
+
+  <div class="code-block vertical">
+      <pre class="prettyprint source-code">
+ // Why do we need an array???
+ // Anything compatible with a for loop is ok
+ // I don't mind the specific class!
+ function oddElementsFromArray(aCollection) {
+   if(!aCollection
+        || typeof aCollection.length !== 'number')
+     throw "Can't iterate the argument!";
+   // Quack ensured!
+   var r=[], current;
+   for(var i=0, size=aCollection.length;i&lt;size;i++) {
+     current=aCollection[i];
+     if(current % 2==1)
+        r.push(current);
+   }
+   return r;
+ } </pre>
   </div>
   <footer class="license">
     <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/">
@@ -760,7 +842,8 @@
  });
  function forEachProductUriCheaperThan(maxPrice, callback) {
    ajax.fetch('/products?priceMax='+maxPrice, function(hrefs) {
-     for(var i=0;i&lt;hrefs.length;i++)
+     var size=hrefs.length;
+     for(var i=0;i&lt;size;i++)
        callback(hrefs[i]);
    });
  }
@@ -814,8 +897,9 @@
     <pre class="prettyprint source-code">
  function fetchProductDataAndThen(callback) {
    ajax.fetch('/products', function(hrefs) {
-     for(var i=0;i&lt;hrefs.length;i++) {
-       var productUri=hrefs[i];
+     var productUri, size=hrefs.length;
+     for(var i=0;i&lt;size;i++) {
+       productUri=hrefs[i];
        // A tricky bug here !
        ajax.fetch(productUri, function(productData) {
          callback(productData, productUri);
@@ -839,8 +923,9 @@
     <pre class="prettyprint source-code">
  function fetchProductDataAndThen(callback) {
    ajax.fetch('/products', function(hrefs) {
-     for(var i=0;i&lt;hrefs.length;i++) {
-       var productUri=hrefs[i];
+     var productUri, size=hrefs.length;
+     for(var i=0;i&lt;size;i++) {
+       productUri=hrefs[i];
        ajax.fetch(productUri, (function(uri) {
          return function(productData) {
            callback(productData, uri);
@@ -865,7 +950,6 @@
 
   <div class="code-block vertical">
     <pre class="prettyprint source-code">
- // This is a function factory
  // If objects can have factories, why not functions?
  function fetchServerDataFromAndThen(uri, callback) {
    return function(productData) {
@@ -874,8 +958,9 @@
  }
  function fetchProductDataAndThen(callback) {
    ajax.fetch('/products', function(hrefs) {
-     for(var i=0;i&lt;hrefs.length;i++) {
-       var productUri=hrefs[i];
+     var productUri, size=hrefs.length;
+     for(var i=0;i&lt;size;i++) {
+       productUri=hrefs[i];
        ajax.fetch(productUri
          , fetchServerDataAndThen(productUri, callback));
      }
