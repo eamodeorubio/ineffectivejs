@@ -924,14 +924,106 @@
  // Design API with asynchronous in mind from the start
  // Add a touch of DSL & OO
  function fetchCheapProductsDataAndThen(callback) {
-   ProductsCollection
-      .withMaxPrice(200)
-      .forEach(function(product) {
+   var cheapProducts=[];
+   Products
+      .withMaxPrice(200) // Fluent API
+      .each(function(product, isLast) {
+         // Avoids a closure inside a loop
          product.fetch(function(productData) {
-           callback(productData, product);
-         }
-      );
+           cheapProducts.push(productData);
+           if(isLast)
+             callback(cheapProducts);
+         });
+      });
    });
+ }</pre>
+  </div>
+  <footer class="license">
+    <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/">
+      <img alt="Creative Commons License" style="border-width:0"
+           src="http://i.creativecommons.org/l/by-nc-sa/3.0/88x31.png"/></a>
+
+    <a class="twitter" href="https://twitter.com/eamodeorubio">@eamodeorubio</a></footer>
+</article>
+<article class="step slide" id="callbacks" data-x="-700" data-y="-1080" data-rotate="-180" data-scale="0.5"
+         data-z="200">
+  <h1 class="title">Asynchronous is first citizen</h1>
+
+  <div class="code-block vertical">
+    <pre class="prettyprint source-code small">
+ // The pyramid of DOOM strikes back!
+ function fetchCheapAndInterestingProductsAndThen(user, callback) {
+   var cheapAndInterestingProducts=[];
+   fetchCheapProductsDataAndThen(function(productsData) {
+     var productsCount=productsData.length;
+     productsData.forEach(function(productData, index){
+       var isLast = (index-1) === productsCount;
+       user.couldBeInterestedIn(productData, function(isInterested) {
+         if(isInterested)
+           cheapAndInterestingProducts.push(productData);
+         if(isLast)
+           callback(cheapAndInterestingProducts);
+       });
+     });
+   });
+ }</pre>
+  </div>
+  <footer class="license">
+    <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/">
+      <img alt="Creative Commons License" style="border-width:0"
+           src="http://i.creativecommons.org/l/by-nc-sa/3.0/88x31.png"/></a>
+
+    <a class="twitter" href="https://twitter.com/eamodeorubio">@eamodeorubio</a></footer>
+</article>
+<article class="step slide" id="promises" data-x="-700" data-y="-1080" data-rotate="-180" data-scale="0.5"
+         data-z="250">
+  <h1 class="title">Asynchronous is first citizen</h1>
+
+  <div class="code-block vertical">
+    <pre class="prettyprint source-code">
+ // Design API with asynchronous in mind from the start
+ // Use 'promises' instead of callbacks
+ function cheapProductsData() {
+   var cheapProducts=[]
+     , promisedProducts=new Promise();
+   Products
+      .withMaxPrice(200)
+      .each(function(product, isLast) {
+         cheapProducts.push(product);
+         if(isLast)
+           promisedProducts.fulfill(cheapProducts);
+      });
+   });
+   return promisedProducts;
+ }</pre>
+  </div>
+  <footer class="license">
+    <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/">
+      <img alt="Creative Commons License" style="border-width:0"
+           src="http://i.creativecommons.org/l/by-nc-sa/3.0/88x31.png"/></a>
+
+    <a class="twitter" href="https://twitter.com/eamodeorubio">@eamodeorubio</a></footer>
+</article>
+<article class="step slide" id="thenables" data-x="-700" data-y="-1080" data-rotate="-180" data-scale="0.5"
+         data-z="300">
+  <h1 class="title">Asynchronous is first citizen</h1>
+
+  <div class="code-block vertical">
+    <pre class="prettyprint source-code small">
+ function cheapAndInterestingProducts(user) {
+   var cheapAndInterestingProducts=[], promisedProducts=new Promise();
+   cheapProductsData().forEach(function(product, index) {
+      var isLast = (index-1) === productsCount;
+      product.then(function(productData){
+        return user.couldBeInterested(productData);
+      }).then(function(isInterested){
+        if(isInterested)
+          cheapAndInterestingProducts.push(product);
+        if(isLast)
+          promisedProducts.fulfill(cheapAndInterestingProducts);
+      });
+   });
+   return promisedProducts;
  }</pre>
   </div>
   <footer class="license">
@@ -994,6 +1086,24 @@
     <li class="even">Focus in the app logic</li>
     <li class="odd">...in a platform independent way</li>
     <li class="odd">...because technology changes fast!</li>
+  </ul>
+  <footer class="license">
+    <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/">
+      <img alt="Creative Commons License" style="border-width:0"
+           src="http://i.creativecommons.org/l/by-nc-sa/3.0/88x31.png"/></a>
+
+    <a class="twitter" href="https://twitter.com/eamodeorubio">@eamodeorubio</a></footer>
+</article>
+<article class="step slide" id="debug" data-x="-700" data-y="-1080" data-z="-1550" data-scale="0.5">
+  <h1 class="title">Reckless debugging</h1>
+  <ul class="bullets">
+    <li class="even">Debugger is your most important tool?</li>
+    <li class="odd">...try doing tests!</li>
+    <li class="even">They focus you on the relevant code</li>
+    <li class="even">Debug only if you don't have any idea</li>
+    <li class="odd">...why your test broke</li>
+    <li class="odd">...why you have a green that shouldn't be</li>
+    <li class="even">But you have a clear start point</li>
   </ul>
   <footer class="license">
     <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/">
