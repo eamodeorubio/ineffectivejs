@@ -571,8 +571,8 @@
  // Anything compatible with a for loop is ok
  // I don't mind the specific class!
  function oddElementsFromArray(aCollection) {
-   if(!aCollection
-        || typeof aCollection.length !== 'number')
+   if(!aCollection||typeof aCollection.length!=='number'
+               || typeof aCollection.push !== 'function')
      throw "Can't iterate the argument!";
    // Quack ensured!
    var r=[], current;
